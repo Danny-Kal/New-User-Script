@@ -73,7 +73,7 @@ elseif ($DefaultSite -eq "LONDON10") {
 		$OU = "OU=Ops,OU=Active,OU=Users,OU=LON10 - Slough,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
 		}
 else    {
-        $OU = "OU=Central Accounts,OU=VDC Coporate,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
+        $OU = "OU=Active,OU=Users,OU=Kent House HQ,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
         }
 
 
