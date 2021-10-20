@@ -1,5 +1,13 @@
 #Script to create new starters
 
+$wwwhomepage = "www.virtusdcs.com"
+$Company = "VIRTUS Data Centres"
+$Department = "Operations"
+$Password = 'Sun32Garden'
+$infile = "c:\temp\Repo\Def_Groups.csv"
+$outfile = "c:\temp\Repo\Def_Groups_Plus.csv"
+$UPN = "virtusdcs.com"
+
 #Point to new starter Excel form and import it into the ImportExcel Module
 $NewUserForm = "C:\Temp\Repo\New starter sheet.xlsm"
 $excel = Open-ExcelPackage -Path $NewUserForm
@@ -43,8 +51,17 @@ Import-Module ActiveDirectory
 #Import the CSV created in previous section into a new variable
 $ADUsers = Import-Csv $Employees_Export
 
-#Declare a variable for what will be the UPN suffix of the new user
-$UPN = "virtusdcs.com"
+
+#Here the script will parse the CSV file imported into $ADUsers and assume that each row (excluding header row) is a user
+#For each user (there will only be one) it will assign a value to a variable for each column in that row based on the header name (first name, last name, etc.) 
+foreach ($User in $ADUsers) {
+	$FirstName = $user.FirstName
+	$LastName = $user.LastName
+	$UserName = $user.UserName
+	$JobTitle = $user.JobTitle
+	$DefaultSite = $User.DefaultSite
+	$Manager = $user.Manager
+}	
 
 
 #Check the value of the $DefaultSite variable and provide value for $OU variable based on this
@@ -76,22 +93,6 @@ else    {
         $OU = "OU=Active,OU=Users,OU=Kent House HQ,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
         }
 
-
-#Here the script will parse the CSV file imported into $ADUsers and assume that each row (excluding header row) is a user
-#For each user (there will only be one) it will assign a value to a variable for each column in that row based on the header name (first name, last name, etc.) 
-foreach ($User in $ADUsers) {
-	$FirstName = $user.FirstName
-	$LastName = $user.LastName
-	$UserName = $user.UserName
-	$JobTitle = $user.JobTitle
-	$Password = 'Sun32Garden'
-	$DefaultSite = $User.DefaultSite
-    $wwwhomepage = "www.virtusdcs.com"
-	$Company = "VIRTUS Data Centres"
-	$Department = "Operations"
-	$Manager = $user.Manager
-}	
-
 #Here the new user is created with settings specified above
 New-ADUser `
             -SamAccountName $username `
@@ -115,9 +116,6 @@ New-ADUser `
 
 
 #This section provides group membership to the user
-
-$infile = "c:\temp\Repo\Def_Groups.csv"
-$outfile = "c:\temp\Repo\Def_Groups_Plus.csv"
 
 Copy-Item $infile -Destination $outfile
 
@@ -234,4 +232,3 @@ $Add_group = Add-ADGroupMember -Identity $item.GroupName -Members $username
 }
 
 pause
-
