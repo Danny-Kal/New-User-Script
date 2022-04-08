@@ -1,12 +1,12 @@
 #Script to create new starters
 
-$wwwhomepage = "www.virtusdcs.com"
-$Company = "VIRTUS Data Centres"
+$wwwhomepage = "www.website.com"
+$Company = "Company Name"
 $Department = "Operations"
-$Password = 'Sun32Garden'
+$Password = 'Password123'
 $infile = "c:\temp\Repo\Def_Groups.csv"
 $outfile = "c:\temp\Repo\Def_Groups_Plus.csv"
-$UPN = "virtusdcs.com"
+$UPN = "company.com"
 
 #Point to new starter Excel form and import it into the ImportExcel Module
 $NewUserForm = "C:\Temp\Repo\New starter sheet.xlsm"
