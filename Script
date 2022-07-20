@@ -15,83 +15,23 @@ $excel = Open-ExcelPackage -Path $NewUserForm
 #Select worksheet within the Excel file
 $worksheet = $excel.Workbook.Worksheets['New User']
 
-#Declare variable "Employees" 
-$employees = @(
-
-    #Turn variable into a custom object from which a CSV can be exported
-	[pscustomobject]@{
-		
-#Find the cells in the imported Excel file which correlate to the user info below and place those values in the related columns of a CSV
-		FirstName = $worksheet.Cells['B11'].Value 
-		
-		LastName = $worksheet.Cells['B12'].Value 
-		
-		UserName = $worksheet.Cells['B18'].Value 
-		
-		JobTitle = $worksheet.Cells['B14'].Value
-		
-		Manager = $worksheet.Cells['B15'].Value 
-		
-		DefaultSite = $worksheet.Cells['B20'].Value 
-
-	}
-	
-	)
-
-$Employees_Export = "C:\Temp\Repo\Employees_Export.csv"
-    #Export Employees variable as a csv file to be parsed by next section
-	$employees | Export-csv -Path $Employees_Export -NoTypeInformation
-
 
 #This section creates the user with the settings provided by the CSV in previous section
 
 #Import module for managing AD in PowerShell
 Import-Module ActiveDirectory
 
-#Import the CSV created in previous section into a new variable
-$ADUsers = Import-Csv $Employees_Export
 
-
-#Here the script will parse the CSV file imported into $ADUsers and assume that each row (excluding header row) is a user
-#For each user (there will only be one) it will assign a value to a variable for each column in that row based on the header name (first name, last name, etc.) 
-foreach ($User in $ADUsers) {
-	$FirstName = $user.FirstName
-	$LastName = $user.LastName
+	$FirstName = $worksheet.Cells['B11'].Value
+	$LastName = $worksheet.Cells['B12'].Value
 	$UserName = $user.UserName
 	$JobTitle = $user.JobTitle
 	$DefaultSite = $User.DefaultSite
 	$Manager = $user.Manager
-}	
+	
 
 
-#Check the value of the $DefaultSite variable and provide value for $OU variable based on this
-if ($DefaultSite -eq "LONDON1") {
-        $OU = "OU=Active,OU=Users,OU=LON1-Enfield,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-        }
-elseif ($DefaultSite -eq "LONDON2") {
-        $OU = "OU=Active,OU=Users,OU=LON2-Hayes,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-        }
-elseif ($DefaultSite -eq "LONDON3/4") {
-		$OU = "OU=Active,OU=Users,OU=LON4-Slough,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-		}
-elseif ($DefaultSite -eq "LONDON5") {
-		$OU = "OU=Operations,OU=Active,OU=Users,OU=LON5-Stockley Park,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-		}
-elseif ($DefaultSite -eq "LONDON6") {
-		$OU = "OU=Operations,OU=Active,OU=Users,OU=LON6-Stockley Park,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-		}
-elseif ($DefaultSite -eq "LONDON7") {
-		$OU = "OU=Operations,OU=Active,OU=Users,OU=LON7-Stockley Park,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-		}
-elseif ($DefaultSite -eq "LONDON9") {
-		$OU = "OU=Operations,OU=Active,OU=Users,OU=LON9- Slough,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-		}
-elseif ($DefaultSite -eq "LONDON10") {
-		$OU = "OU=Ops,OU=Active,OU=Users,OU=LON10 - Slough,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-		}
-else    {
-        $OU = "OU=Active,OU=Users,OU=Kent House HQ,OU=VirtusDCs,DC=virtusdatacentres,DC=local"
-        }
+
 
 #Here the new user is created with settings specified above
 New-ADUser `
@@ -129,98 +69,7 @@ if ($worksheet.Cells['D61'].Value -eq "Read/Write") {
 if ($worksheet.Cells['D62'].Value -eq "Read/Write") {
 	"SP_Teams_Compliance_Members" | add-content -path $outfile
 	}
-if ($worksheet.Cells['D63'].Value -eq "Read/Write") {
-	"SP_Teams_Construction_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D64'].Value -eq "Read/Write") {
-	"SP_Teams_Engineering_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D65'].Value -eq "Read/Write") {
-	"SP_Teams_IT_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D66'].Value -eq "Read/Write") {
-	"SP_Teams_Library_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D67'].Value -eq "Read/Write") {
-	"SP_Teams_Marketing_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D68'].Value -eq "Read/Write") {
-	"SP_Teams_Operations_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D69'].Value -eq "Read/Write") {
-	"SP_Teams_ProjectShield_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D70'].Value -eq "Read/Write") {
-	"SP_Teams_RiskManagement_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D71'].Value -eq "Read/Write") {
-	"SP_Teams_Sales_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D72'].Value -eq "Read/Write") {
-	"VIRTUS-Jaguar-L4-Drive-RW" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D75'].Value -eq "Read/Write") {
-	"SP_Teams_Security_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D76'].Value -eq "Read/Write") {
-	"SP_Teams_SMC_Members" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D79'].Value -eq "Read/Write") {
-	"SP_DocLib_Admin_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D80'].Value -eq "Read/Write") {
-	"SP_DocLib_Commercial_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D81'].Value -eq "Read/Write") {
-	"SP_DocLib_Compliance_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D82'].Value -eq "Read/Write") {
-	"SP_DocLib_Construction_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D83'].Value -eq "Read/Write") {
-	"SP_DocLib_CostManagement_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D84'].Value -eq "Read/Write") {
-	"SP_DocLib_Engineering_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D85'].Value -eq "Read/Write") {
-	"SP_DocLib_Finance_Confidential-Accounting_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D86'].Value -eq "Read/Write") {
-	"SP_DocLib_Finance_Confidential-Modelling_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D87'].Value -eq "Read/Write") {
-	"SP_DocLib_HR_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D88'].Value -eq "Read/Write") {
-	"SP_DocLib_IT_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D89'].Value -eq "Read/Write") {
-	"SP_DocLib_Library_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D90'].Value -eq "Read/Write") {
-	"SP_DocLib_Marketing_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D91'].Value -eq "Read/Write") {
-	"SP_DocLib_Operations_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D92'].Value -eq "Read/Write") {
-	"SP_DocLib_RiskManagement_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D93'].Value -eq "Read/Write") {
-	"SP_DocLib_Sales_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D94'].Value -eq "Read/Write") {
-	"SP_DocLib_Security_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D95'].Value -eq "Read/Write") {
-	"SP_DocLib_SMC_Confidential_Contributor" | add-content -path $outfile
-	}
-if ($worksheet.Cells['D96'].Value -eq "Read/Write") {
-	"SP_DocLib_SMT_Confidential_Contributor" | add-content -path $outfile
-	}
-#if ($worksheet.Cells['D'].Value -eq "Read/Write") {
-#	"
+
 
 
 $csv = Import-Csv -Path $outfile
